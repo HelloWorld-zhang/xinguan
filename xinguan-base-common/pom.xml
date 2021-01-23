@@ -44,12 +44,8 @@
         <!--swagger-->
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+            <!--<version>${swagger.version}</version>-->
         </dependency>
 
         <!--lombok简化getter和setter-->
@@ -62,6 +58,13 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-web</artifactId>
+            <version>2.9.2</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
