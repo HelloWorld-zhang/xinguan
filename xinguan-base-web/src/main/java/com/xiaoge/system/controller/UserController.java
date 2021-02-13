@@ -1,21 +1,21 @@
 package com.xiaoge.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoge.system.entity.User;
 import com.xiaoge.system.service.UserService;
+import com.xiaoge.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.web.bind.annotation.RestController;
-import response.BusinessException;
-import response.Result;
-import response.ResultCode;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import com.xiaoge.response.Result;
 
-
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,36 +24,86 @@ import java.util.List;
  * </p>
  *
  * @author xiaoge
- * @since 2021-01-22
+ * @since 2020-09-03
  */
+@Api(value = "用户管理")
 @RestController
-@RequestMapping("/system/user")
-@Api(value = "系统用户模块",tags = "系统用户接口")
+@RequestMapping("/user")
+@CrossOrigin
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @GetMapping
-    @ApiOperation(value = "用户列表",notes = "查询所有用户信息")
-    public Result findUsers(){
-        List<User> list = userService.list();
-        return Result.ok().data("users",list);
+    /**
+     * 分页查询用户列表
+     *
+     * @return
+     */
+    @ApiOperation("分页查询用户列表")
+    @GetMapping("/findUserList")
+    public Result findUserList(@RequestParam(required = true, defaultValue = "1") Integer current,
+                               @RequestParam(required = true, defaultValue = "6") Integer size) {
+        //对用户进行分页,泛型中注入的就是用户实体类
+        Page<User> page = new Page<>(current, size);
+        //单表的时候其实这个方法是非常好用的
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        Page<User> userPage = userService.page(page);
+        long total = userPage.getTotal();
+        List<User> records = userPage.getRecords();
+        return Result.ok().data("total", total).data("records", records);
     }
 
+    /**
+     * 根据用户条件进行分页查询
+     *
+     * @param current
+     * @param size
+     * @param userVO
+     * @return
+     */
 
+    @ApiOperation("根据用户条件进行分页查询")
+    @PostMapping("/findUserPage")
+    public Result findUserPage(@RequestParam(required = true, defaultValue = "1") Integer current,
+                               @RequestParam(required = true, defaultValue = "6") Integer size,
+                               @RequestBody UserVO userVO) {
+        //对用户进行分页,泛型中注入的就是用户实体类
+        Page<User> page = new Page<>(current, size);
+        //单表的时候其实这个方法是非常好用的
+        QueryWrapper<User> wrapper = getWrapper(userVO);
+        IPage<User> userPage = userService.findUserPage(page, wrapper);
+        long total = userPage.getTotal();
+        List<User> records = userPage.getRecords();
+        return Result.ok().data("total", total).data("records", records);
+    }
 
-    @GetMapping("/{id}")
-    @ApiOperation(value = "查询单个用户",notes = "根据id查询用户信息")
-    public Result findUserById(@PathVariable("id") long id){
-        User findUserById = userService.getById(id);
-        if (findUserById!=null){
-            return Result.ok().data("user",findUserById);
-        }else {
-            throw new BusinessException(ResultCode.USER_NOT_FOUND_EXCEPTION.getCode(),ResultCode.USER_NOT_FOUND_EXCEPTION.getMessage());
+    /**
+     * 封装查询条件
+     *
+     * @param userVO
+     * @return
+     */
+    private QueryWrapper<User> getWrapper(UserVO userVO) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (userVO != null) {
+            if (!StringUtils.isEmpty(userVO.getDepartmentId())) {
+                queryWrapper.eq("department_id", userVO.getDepartmentId());
+            }
+            if (!StringUtils.isEmpty(userVO.getUsername())) {
+                queryWrapper.eq("username", userVO.getUsername());
+            }
+            if (!StringUtils.isEmpty(userVO.getEmail())) {
+                queryWrapper.eq("email", userVO.getEmail());
+            }
+            if (!StringUtils.isEmpty(userVO.getSex())) {
+                queryWrapper.eq("sex", userVO.getSex());
+            }
+            if (!StringUtils.isEmpty(userVO.getNickname())) {
+                queryWrapper.eq("nickname", userVO.getNickname());
+            }
         }
+        return queryWrapper;
     }
-
-
 }
 

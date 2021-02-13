@@ -1,5 +1,6 @@
 package com.xiaoge.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
@@ -12,29 +13,31 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 角色表
+ *
  * </p>
  *
  * @author xiaoge
- * @since 2020-09-04
+ * @since 2020-09-08
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("tb_role")
-@ApiModel(value="Role对象", description="角色表")
-public class Role implements Serializable {
+@TableName("tb_department")
+@ApiModel(value="Department对象", description="")
+public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "角色ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "角色名称")
-    private String roleName;
+    @ApiModelProperty(value = "系名")
+    private String name;
 
-    @ApiModelProperty(value = "角色描述")
-    private String remark;
+    @ApiModelProperty(value = "系办公电话")
+    private String phone;
+
+    @ApiModelProperty(value = "办公室地点")
+    private String address;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
@@ -42,8 +45,11 @@ public class Role implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date modifiedTime;
 
-    @ApiModelProperty(value = "是否可用,0:不可用，1：可用")
-    private Integer status;
+    @ApiModelProperty(value = "系主任id，关联用户表")
+    private Long mgrId;
 
+    @ApiModelProperty(value = "分组查询中的部门人数")
+    @TableField(exist = false)
+    private Integer deptCount;
 
 }

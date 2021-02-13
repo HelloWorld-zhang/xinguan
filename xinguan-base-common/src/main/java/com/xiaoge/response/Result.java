@@ -1,12 +1,15 @@
-package response;
+package com.xiaoge.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * 公共返回结果
+ * @author NieChangan
+ */
 @Data
 public class Result {
 
@@ -16,18 +19,23 @@ public class Result {
     @ApiModelProperty(value = "返回码")
     private Integer code;
 
-    @ApiModelProperty(value = "返回信息")
+    @ApiModelProperty(value = "返回消息")
     private String message;
 
     @ApiModelProperty(value = "返回数据")
-    private Map<String,Object> data= new HashMap<>();
+    private Map<String,Object> data = new HashMap<>();
 
     /**
-     * 构造方法私有化，里面的方法都是静态方法
-     * 达到保护作用
+     * 构造方法私有化,里面的方法都是静态方法
+     * 达到保护属性的作用
      */
-    private Result(){}
+    private Result(){
 
+    }
+
+    /**
+     * 这里是使用链式编程
+     */
     public static Result ok(){
         Result result = new Result();
         result.setSuccess(true);
@@ -35,11 +43,12 @@ public class Result {
         result.setMessage(ResultCode.SUCCESS.getMessage());
         return result;
     }
+
     public static Result error(){
         Result result = new Result();
         result.setSuccess(false);
-        result.setCode(ResultCode.ERROR.getCode());
-        result.setMessage(ResultCode.ERROR.getMessage());
+        result.setCode(ResultCode.COMMON_FAIL.getCode());
+        result.setMessage(ResultCode.COMMON_FAIL.getMessage());
         return result;
     }
 
@@ -63,7 +72,7 @@ public class Result {
         return this;
     }
 
-    public Result data(String key, Object value){
+    public Result data(String key,Object value){
         this.data.put(key,value);
         return this;
     }
@@ -72,13 +81,4 @@ public class Result {
         this.setData(map);
         return this;
     }
-
-
-
-
-
-
-
-
-
 }
