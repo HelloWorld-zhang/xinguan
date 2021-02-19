@@ -105,5 +105,17 @@ public class UserController {
         }
         return queryWrapper;
     }
+
+    @ApiOperation(value = "添加用户",notes = "添加用户")
+    @PostMapping("/addUser")
+    public Result addUser(@RequestBody User user){
+        try {
+            userService.addUser(user);
+            return Result.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error();
+        }
+    }
 }
 

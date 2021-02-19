@@ -30,7 +30,6 @@ public class AliOssController {
     @ApiOperation(value = "删除替换之后的头像")
     @PostMapping("/deleteImgFile")
     public Result deleteImgFile(String file){
-        //https://xinguan-parent.oss-cn-hangzhou.aliyuncs.com/2020/10/20/300f7c9d6546486eb55d825d4edcf668.png
         try {
             String[] split = file.split(".com/");
             System.out.println(split[1]);
